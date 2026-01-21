@@ -55,7 +55,16 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 	<!-- Database Config (Generic MySQL) -->
     <!-- BEST PRACTICE PASS: Externalized -->
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="db-config-id">
-		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" />
+		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" >
+			<db:pooling-profile  minPoolSize="0" acquireIncrement="1" preparedStatementCacheSize="100" maxIdleTime="0" >
+				<db:additional-properties >
+					<db:additional-property key="firstadditionalProperty" value="${db.firstadditionalPropertyValue}" />
+					<db:additional-property key="secondadditionalProperty" value="${db.secondadditionalPropertyValue}" />
+                    <!-- FAIL: DB-ConnPool-001 (not externalized) -->
+                    <db:additional-property key="testConnectionOnCheckin" value="true" />
+				</db:additional-properties>
+			</db:pooling-profile>
+		</db:my-sql-connection>
 	</db:config>
 	
 	<!-- Web Service Consumer (SOAP) -->
@@ -82,6 +91,9 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
         
         <!-- RULE 014: Forbidden toBase64 (FAIL) -->
         <set-variable variableName="encodedId" value="#[toBase64(vars.transactionId)]" doc:name="Set Encoded ID"/>
+        
+        <!-- RULE 033: API Method Logic (PASS) -->
+        <set-variable variableName="apimethod" value="#[vars.encryptedRequestPath]" doc:name="Set API Method"/>
 
 		<logger level="INFO" doc:name="Log Start" message="#['Starting transaction: ' ++ vars.transactionId]"/>
 
@@ -128,6 +140,8 @@ output application/json
 		<error-handler >
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="main-error-handler">
 				<logger level="ERROR" doc:name="Log Error" message="#['Error in transaction ' ++ vars.transactionId ++ ': ' ++ error.description]"/>
+                <!-- FAIL: Secure::Property-001 trigger -->
+                <logger level="INFO" message="${secure::my.secret.key}"/>
 				<set-payload value='{ "status": "ERROR", "message": "Internal Server Error" }' doc:name="Error Response"/>
 			</on-error-propagate>
 		</error-handler>
@@ -165,10 +179,11 @@ output application/json
 	<flow name="soap-backend-flow" doc:id="soap-flow-id">
 		<logger level="INFO" message="Preparing SOAP Request"/>
         
-        <!-- RULE 012: Legacy JCE Encryption (FAIL) -->
-        <crypto:jce-encrypt-pbe doc:name="Legacy Encrypt" doc:id="legacy-encrypt-id" password="pass">
+        <!-- RULE 012: Legacy JCE Encryption (FAIL - COMMENTED OUT) -->
+        <!-- <crypto:jce-encrypt-pbe doc:name="Legacy Encrypt" doc:id="legacy-encrypt-id" password="pass">
             <crypto:pbe-config password="pass" algorithm="PBEWithHmacSHA256AndAES_256"/>
-        </crypto:jce-encrypt-pbe>
+        </crypto:jce-encrypt-pbe> -->
+        <set-variable value="#[com.raks.EncUtil::encryptJcePbe(payload, 'pass')]" variableName="encryptedPayload"/><!-- EncUtil::encryptJcePbe -->
 		
 		<ee:transform doc:name="Prepare SOAP Envelope" doc:id="transform-soap-req-id">
 			<ee:message >

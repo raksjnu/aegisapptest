@@ -25,6 +25,8 @@
 
         <!-- Mule logger -->
         <AsyncLogger name="org.mule.runtime.core.internal.processor.LoggerMessageProcessor" level="INFO"/>
+        <!-- FAIL: Wire Logging-001 -->
+        <AsyncLogger name="org.mule.service.http.impl.service.HttpMessageLogger" level="DEBUG"/>
 
         <AsyncRoot level="INFO">
             <AppenderRef ref="file"/>
