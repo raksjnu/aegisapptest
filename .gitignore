@@ -45,3 +45,7 @@ target/
 .mule/
 .DS_Store
 velocity.log
+
+# Aegis report outputs
+Aegis-*/
+Aegis-reports/
