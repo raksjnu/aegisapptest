@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch" 
-    xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
-	xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" 
+<mule xmlns:ibm-mq="http://www.mulesoft.org/schema/mule/ibm-mq" 
+    xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" 
+    xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" 
     xmlns:http="http://www.mulesoft.org/schema/mule/http" 
-    xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" 
+    xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
     xmlns:ibm="http://www.mulesoft.org/schema/mule/ibm-mq"
     xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
-    xmlns:crypto="http://www.mulesoft.org/schema/mule/crypto"
+    xmlns:crypto="http://www.mulesoft.org/schema/mule/crypto" 
     xmlns="http://www.mulesoft.org/schema/mule/core" 
     xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
@@ -82,6 +82,13 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 	<!-- ================================================================= -->
 	<!-- Main Orchestration Flow                                           -->
 	<!-- ================================================================= -->
+	<ibm-mq:config name="IBM_MQ_Config1" doc:name="IBM MQ Config" doc:id="702111d3-8673-4272-be45-dd2522e14096" >
+		<ibm-mq:connection cipherSuite="${wmq.mts.cipherSuite}" >
+			<ibm-mq:connection-mode >
+				<ibm-mq:binding />
+			</ibm-mq:connection-mode>
+		</ibm-mq:connection>
+	</ibm-mq:config>
 	<flow name="main-orchestration-flow" doc:id="main-flow-id">
         <!-- RULE 015: HTTP Listener Path (Wrong Path -> FAIL) -->
 		<http:listener doc:name="Receive Order Request" doc:id="main-listener-id" config-ref="MuleApp1_HTTP_Listener_config" path="/process-order"/>
@@ -254,11 +261,18 @@ output application/xml
 			</ee:message>
 		</ee:transform>
 		
-		<jms:publish doc:name="Publish to Queue" doc:id="jms-publish-id" config-ref="JMS_Config" destination="${jms.queue.orders}">
-			<jms:message >
-				<jms:properties ><![CDATA[#[{ "correlationId": vars.transactionId }]]]></jms:properties>
+		<choice doc:name="Choice" doc:id="d565eb81-3445-414c-ac70-5161319179f2" >
+			<when expression="1=1">
+				<ibm-mq:publish doc:name="Publish" doc:id="79d4b1fb-520b-48ff-92b6-a400fa3d008e" config-ref="IBM_MQ_Config1" destination="ibm.queue"/>
+			</when>
+			<otherwise >
+				<jms:publish doc:name="Publish to Queue" doc:id="jms-publish-id" config-ref="JMS_Config" destination="${jms.queue.orders}">
+			<jms:message>
+				<jms:properties><![CDATA[#[{ "correlationId": vars.transactionId }]]]></jms:properties>
 			</jms:message>
 		</jms:publish>
+			</otherwise>
+		</choice>
 	</sub-flow>
 
 </mule>
