@@ -13,8 +13,6 @@ http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/m
     <!-- BANK-004: JCE Config -->
     <crypto:jce-config name="JCE_Config" type="${jce.token.type}" />
 
-    <!-- BANK-005: SOAP Version -->
-    <apikit-soap:config name="soap-config" soapVersion="${soap.version.val}" />
 
     <!-- BANK-021: SQL Server Security (Resolved path) -->
     <db:config name="SQL_DB_Config">

@@ -10,8 +10,6 @@ http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/m
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
 
-    <!-- FAIL: Legacy SOAP Version -->
-    <apikit-soap:config name="soap-config" soapVersion="${soapversion}" service="MyService" port="80" />
 
 	<flow name="fail-flow">
         <!-- FAIL: Blank Path -->

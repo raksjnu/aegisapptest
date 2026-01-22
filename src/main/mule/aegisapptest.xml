@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ibm-mq="http://www.mulesoft.org/schema/mule/ibm-mq" 
-    xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
-	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
-	xmlns:db="http://www.mulesoft.org/schema/mule/db" 
+<mule xmlns:apikit-soap="http://www.mulesoft.org/schema/mule/apikit-soap" 
+    xmlns:ibm-mq="http://www.mulesoft.org/schema/mule/ibm-mq"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms" 
+    xmlns:db="http://www.mulesoft.org/schema/mule/db" 
     xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" 
-    xmlns:http="http://www.mulesoft.org/schema/mule/http" 
+    xmlns:http="http://www.mulesoft.org/schema/mule/http"
     xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
     xmlns:ibm="http://www.mulesoft.org/schema/mule/ibm-mq"
-    xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+    xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" 
     xmlns:crypto="http://www.mulesoft.org/schema/mule/crypto" 
     xmlns="http://www.mulesoft.org/schema/mule/core" 
-    xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+    xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
@@ -21,7 +21,8 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
 http://www.mulesoft.org/schema/mule/ibm-mq http://www.mulesoft.org/schema/mule/ibm-mq/current/mule-ibm-mq.xsd
 http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd
 http://www.mulesoft.org/schema/mule/crypto http://www.mulesoft.org/schema/mule/crypto/current/mule-crypto.xsd
-http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/mule/apikit-soap/current/mule-apikit-soap.xsd">
 	
 	<!-- ================================================================= -->
 	<!-- Global Configuration Elements                                     -->
@@ -89,11 +90,13 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 			</ibm-mq:connection-mode>
 		</ibm-mq:connection>
 	</ibm-mq:config>
+	<apikit-soap:config name="APIKit_for_SOAP_Configuration" doc:name="APIKit for SOAP Configuration" doc:id="cf2121a3-fe8e-49f8-b72e-ff4de240aa96" soapVersion="SOAP_11" />
 	<flow name="main-orchestration-flow" doc:id="main-flow-id">
         <!-- RULE 015: HTTP Listener Path (Wrong Path -> FAIL) -->
 		<http:listener doc:name="Receive Order Request" doc:id="main-listener-id" config-ref="MuleApp1_HTTP_Listener_config" path="/process-order"/>
 		
 		<!-- Initialize Transaction ID -->
+		<apikit-soap:router doc:name="SOAP Router" doc:id="a460d656-edb6-4cbb-a9e2-a81c3628e725" config-ref="APIKit_for_SOAP_Configuration"/>
 		<set-variable variableName="transactionId" value="#[uuid()]" doc:name="Set Transaction ID"/>
         
         <!-- RULE 014: Forbidden toBase64 (FAIL) -->
@@ -101,7 +104,6 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
         
         <!-- RULE 033: API Method Logic (PASS) -->
         <set-variable variableName="apimethod" value="#[vars.encryptedRequestPath]" doc:name="Set API Method"/>
-
 		<logger level="INFO" doc:name="Log Start" message="#['Starting transaction: ' ++ vars.transactionId]"/>
 
 		<!-- Parallel Processing: Fetch User Info (REST) and Inventory (SOAP) -->
