@@ -90,7 +90,7 @@ http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/m
 			</ibm-mq:connection-mode>
 		</ibm-mq:connection>
 	</ibm-mq:config>
-	<apikit-soap:config name="APIKit_for_SOAP_Configuration" doc:name="APIKit for SOAP Configuration" doc:id="cf2121a3-fe8e-49f8-b72e-ff4de240aa96" soapVersion="SOAP_11" />
+	<apikit-soap:config name="APIKit_for_SOAP_Configuration" doc:name="APIKit for SOAP Configuration" doc:id="cf2121a3-fe8e-49f8-b72e-ff4de240aa96" soapVersion="${soapVersion}" />
 	<flow name="main-orchestration-flow" doc:id="main-flow-id">
         <!-- RULE 015: HTTP Listener Path (Wrong Path -> FAIL) -->
 		<http:listener doc:name="Receive Order Request" doc:id="main-listener-id" config-ref="MuleApp1_HTTP_Listener_config" path="/process-order"/>
