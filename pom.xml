@@ -2,18 +2,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.mycompany</groupId>
-	<artifactId>muleapp1_muleguard</artifactId>
+	<groupId>com.truist.eapi</groupId>
+	<artifactId>aegisapptest</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>mule-application</packaging>
 
 	<name>aegisapptest</name>
 
+	<parent>
+        <groupId>com.truist.eapi</groupId>
+        <artifactId>MuleParentPom</artifactId>
+        <version>3.0.0</version>
+    </parent>
+
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<app.runtime>4.4.0-20220221</app.runtime>
-		<mule.maven.plugin.version>3.8.0</mule.maven.plugin.version>
+		<app.runtime>4.10.0</app.runtime>
+		<cicd.mule.version>4.10.0</cicd.mule.version>
+		<mule.maven.plugin.version>6.6.0</mule.maven.plugin.version>
 		<munit.version>3.6.2</munit.version>
 	</properties>
 

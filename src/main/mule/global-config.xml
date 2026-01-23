@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:apikit-soap="http://www.mulesoft.org/schema/mule/apikit-soap" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
 	xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/mule/apikit-soap/current/mule-apikit-soap.xsd">
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 
     <!-- FAIL: HTTP Listener with blank Path -->
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" >
@@ -29,7 +28,7 @@ http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/m
 
         <!-- FAIL: DLQ Logic -->
         <choice doc:name="Choice">
-			<when expression="#[vars.flag == 'north.bound.dlp.flag']">
+			<when expression="#[vars.flag == '${nbdlpflag}']">
                 <logger level="WARN" message="DLP Found"/>
 			</when>
 		</choice>

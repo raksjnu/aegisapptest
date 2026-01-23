@@ -37,7 +37,7 @@ http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/m
     </crypto:jce-config>
 
     <!-- RULE 005: IBM MQ Config (Wrong Cipher -> FAIL) -->
-    <ibm:config name="IBM_MQ_Config" doc:name="IBM MQ Config" doc:id="ibm-mq-config-id" >
+    <ibm:config name="IBM_MQ_Config" doc:name="IBM MQ Config" doc:id="a869d4b3-70d5-44ee-9afa-76fb5d79b8f8" >
         <!-- cipherSuite should be TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 -->
         <ibm:connection host="localhost" port="1414" queueManager="QM1" channel="DEV.APP.SVRCONN" cipherSuite="SSL_RSA_WITH_AES_128_CBC_SHA" />
     </ibm:config>
@@ -90,7 +90,6 @@ http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/m
 			</ibm-mq:connection-mode>
 		</ibm-mq:connection>
 	</ibm-mq:config>
-	<apikit-soap:config name="APIKit_for_SOAP_Configuration" doc:name="APIKit for SOAP Configuration" doc:id="cf2121a3-fe8e-49f8-b72e-ff4de240aa96" soapVersion="${soapVersion}" />
 	<flow name="main-orchestration-flow" doc:id="main-flow-id">
         <!-- RULE 015: HTTP Listener Path (Wrong Path -> FAIL) -->
 		<http:listener doc:name="Receive Order Request" doc:id="main-listener-id" config-ref="MuleApp1_HTTP_Listener_config" path="/process-order"/>
@@ -243,38 +242,6 @@ ns ns0 http://tempuri.org/
 	<!-- ================================================================= -->
 	<!-- Backend Flow 4: JMS/MQ Publishing (Subflow)                       -->
 	<!-- ================================================================= -->
-	<sub-flow name="mq-publish-subflow" doc:id="mq-subflow-id">
-		<logger level="INFO" message="Publishing processing event to MQ..."/>
-		
-		<ee:transform doc:name="To Legacy XML" doc:id="transform-legacy-id">
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/xml
----
-{
-	Event: {
-		Id: vars.transactionId,
-		Type: "OrderProcessed",
-        // RULE 011: DLP Flag (FAIL)
-        DLP: "${north.bound.dlp.flag}",
-		Origin: "MuleApp1"
-	}
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		
-		<choice doc:name="Choice" doc:id="d565eb81-3445-414c-ac70-5161319179f2" >
-			<when expression="1=1">
-				<ibm-mq:publish doc:name="Publish" doc:id="79d4b1fb-520b-48ff-92b6-a400fa3d008e" config-ref="IBM_MQ_Config1" destination="ibm.queue"/>
-			</when>
-			<otherwise >
-				<jms:publish doc:name="Publish to Queue" doc:id="jms-publish-id" config-ref="JMS_Config" destination="${jms.queue.orders}">
-			<jms:message>
-				<jms:properties><![CDATA[#[{ "correlationId": vars.transactionId }]]]></jms:properties>
-			</jms:message>
-		</jms:publish>
-			</otherwise>
-		</choice>
-	</sub-flow>
+	
 
 </mule>
