@@ -37,7 +37,7 @@ http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/m
     </crypto:jce-config>
 
     <!-- RULE 005: IBM MQ Config (Wrong Cipher -> FAIL) -->
-    <ibm:config name="IBM_MQ_Config" doc:name="IBM MQ Config" doc:id="a869d4b3-70d5-44ee-9afa-76fb5d79b8f8" >
+    <ibm:config name="IBM_MQ_Config" doc:id="a869d4b3-70d5-44ee-9afa-76fb5d79b8f8" doc:name="IBM MQ Config"  >
         <!-- cipherSuite should be TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 -->
         <ibm:connection host="localhost" port="1414" queueManager="QM1" channel="DEV.APP.SVRCONN" cipherSuite="SSL_RSA_WITH_AES_128_CBC_SHA" />
     </ibm:config>
@@ -50,7 +50,7 @@ http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/m
 	<!-- HTTP Request (REST) -->
     <!-- BEST PRACTICE FAIL: Host hardcoded, Timeout Missing/Hardcoded -->
 	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="http-request-config-id" basePath="/api" responseTimeout="5000">
-		<http:request-connection host="jsonplaceholder.typicode.com" port="443" protocol="HTTPS"/>
+		<http:request-connection host="jsonplaceholder.typicode.com" protocol="HTTPS" port="443" />
 	</http:request-config>
 	
 	<!-- Database Config (Generic MySQL) -->
@@ -111,7 +111,7 @@ http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/m
 				<flow-ref doc:name="Call REST Backend" doc:id="ref-rest-flow" name="rest-backend-flow"/>
 			</route>
 			<route >
-				<flow-ref doc:name="Call SOAP Backend" doc:id="ref-soap-flow" name="soap-backend-flow"/>
+				<flow-ref doc:name="Call SOAP Backend"  name="soap-backend-flow" doc:id="ref-soap-flow" />
 			</route>
 		</scatter-gather>
 		
