@@ -6,7 +6,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 
     <!-- FAIL: HTTP Listener with blank Path -->
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" >
-		<http:listener-connection host="0.0.0.0" port="8081" />
+		<http:listener-connection port="8081" host="0.0.0.0"  />
 	</http:listener-config>
 
 
@@ -24,12 +24,12 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
         <http:policy-ref ref="Truist-AAA-SOAP"/>
         
         <!-- FAIL: Missing EncUtil Logic (Legacy PBE) -->
-        <set-variable value="secure::jce-encrypt-pbe" variableName="oldCrypto"/>
+        <set-variable variableName="oldCrypto" value="secure::jce-encrypt-pbe" />
 
         <!-- FAIL: DLQ Logic -->
         <choice doc:name="Choice">
 			<when expression="#[vars.flag == '${nbdlpflag}']">
-                <logger level="WARN" message="DLP Found"/>
+                <logger  message="DLP Found" level="WARN" />
 			</when>
 		</choice>
 
