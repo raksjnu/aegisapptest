@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+	<flow name="batchFlow" doc:id="c4923219-cc98-4924-ad95-cd9988276af3" >
+		<batch:job jobName="batchBatch_Job" doc:id="9ad2d3e1-f5cf-4533-8025-f5caeb04c31c" >
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="c90ccafa-7a08-4838-861c-cde53a3e04ec" />
+			</batch:process-records>
+		</batch:job>
+
+	</flow>
+</mule>
