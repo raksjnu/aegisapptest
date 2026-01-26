@@ -10,6 +10,6 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 				<batch:step name="Batch_Step" doc:id="c90ccafa-7a08-4838-861c-cde53a3e04ec" />
 			</batch:process-records>
 		</batch:job>
-
+<set-variable variableName="apimethod" value="#[vars.encryptedRequestPath]" doc:name="Set API Method"/>
 	</flow>
 </mule>

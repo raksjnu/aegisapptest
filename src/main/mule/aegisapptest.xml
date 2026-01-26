@@ -102,7 +102,7 @@ http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/m
         <set-variable variableName="encodedId" value="#[toBase64(vars.transactionId)]" doc:name="Set Encoded ID"/>
         
         <!-- RULE 033: API Method Logic (PASS) -->
-        <set-variable variableName="apimethod" value="#[vars.encryptedRequestPath]" doc:name="Set API Method"/>
+        <set-variable variableName="apimethod" value="#[base64(vars.encryptedRequestPath)]" doc:name="Set API Method"/>
 		<logger level="INFO" doc:name="Log Start" message="#['Starting transaction: ' ++ vars.transactionId]"/>
 
 		<!-- Parallel Processing: Fetch User Info (REST) and Inventory (SOAP) -->
